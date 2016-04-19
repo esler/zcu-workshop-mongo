@@ -103,7 +103,7 @@ TODO
 
 
 
-TODO tasks for studens above new collection (posts), unsual _id?
+TODO tasks for studens above new collection (posts), unsual _id?, tags (combination)
 
 ### Sources
 - https://docs.mongodb.org/
