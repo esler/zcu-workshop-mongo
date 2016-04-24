@@ -1,19 +1,23 @@
 # zcu-workshop-mongo
-A workshop about MongoDB. Created for University of West Bohemia. 
+A workshop about MongoDB. Created for University of West Bohemia.
 
 ### Starting MongoDB
 Server
 ```
-mongod --dbpath /tmp
+# linux
+mongod --dbpath /data/db
 
-TODO example for windows
+# windows
+mongod.exe --dbpath D:\Database\MongoDB\data
 ```
 
 Client
 ```
+# linux
 mongo
 
-TODO example for windows
+# windows
+mongo.exe
 ```
 
 ### Creating database
@@ -22,7 +26,7 @@ use friendface
 ```
 
 ### Inserting documents
-Syntax: `db.<collection-name>.insert(<document>)` 
+Syntax: `db.<collection-name>.insert(<document>)`
 ```javascript
 // INSERT INTO users (username, name, sex, age) VALUES ('jon.doe', 'Jon Doe', 'male', 34);
 db.users.insert({"username":"jon.doe","name":"Jon Doe","sex":"male","age":34);
@@ -71,39 +75,56 @@ Syntax: `db.<collection-name>.remove(<query-document>);`
 // DELETE FROM users WHERE age >= 50;
 db.users.remove({"age":{"$gte":50}});
 ```
+### Importing collections
+```
+# linux
+mongoimport --db friendface --collection users < users.json
+
+# windows
+mongoimport.exe /d friendface /c users /file users.json
+```
 
 ### Indexes
 Syntax: `db.<collection-name>.ensureIndex(<index-document>);`
 ```javascript
+// simple index
 db.users.ensureIndex({"username":1});
+
+// compound index
+db.users.ensureIndex({"username":1, age: 1});
 ```
-TODO advantages and limitations
 
 ### Aggregation
 
 #### Aggregation pipeline
 ![example image](https://docs.mongodb.org/manual/_images/aggregation-pipeline.png "Aggregation pipeline example")
+```javascript
+# count average age by gender
+db.users.aggregate([
+    {"$group":{"_id":"$sex","average":{"$avg":"$age"}}}
+]);
+```
 
 #### Map-Reduce
 ![example image](https://docs.mongodb.org/manual/_images/map-reduce.png "Map-Reduce example")
 ```javascript
-// key = sex, value = age
+# map name (first name and last name separately) as key, value always 1
 var map = function () {
-  emit(this.sex, this.age);
+    this.name.split(' ').forEach(function (name) {
+        emit(name, 1);
+    });
 };
 
-// mean by sex
+# sum up all given values
 var reduce = function (key, values) {
-  return Array.sum(values) / values.length;
-};
+    return Array.sum(values);
+}
 
-db.users.mapReduce(map, reduce, {"out":"users_mean_age"});
+db.users.mapReduce(map, reduce, {"out":"users_names"});
 ```
-TODO
 
-
-
-TODO tasks for studens above new collection (posts), unsual _id?, tags (combination)
+### This repo
+http://bit.ly/23SY4Na
 
 ### Sources
 - https://docs.mongodb.org/
