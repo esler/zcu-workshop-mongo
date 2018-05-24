@@ -99,7 +99,7 @@ db.users.ensureIndex({"username":1, age: 1});
 #### Aggregation pipeline
 ![example image](https://docs.mongodb.org/manual/_images/aggregation-pipeline.png "Aggregation pipeline example")
 ```javascript
-# count average age by gender
+// count average age by gender
 db.users.aggregate([
     {"$group":{"_id":"$sex","average":{"$avg":"$age"}}}
 ]);
@@ -108,14 +108,14 @@ db.users.aggregate([
 #### Map-Reduce
 ![example image](https://docs.mongodb.org/manual/_images/map-reduce.png "Map-Reduce example")
 ```javascript
-# map name (first name and last name separately) as key, value always 1
+// map name (first name and last name separately) as key, value always 1
 var map = function () {
     this.name.split(' ').forEach(function (name) {
         emit(name, 1);
     });
 };
 
-# sum up all given values
+// sum up all given values
 var reduce = function (key, values) {
     return Array.sum(values);
 }
